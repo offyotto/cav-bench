@@ -62,6 +62,13 @@ def build_report(metrics: dict, run_meta: dict | None = None,
         if prov.get("policy"):
             L.append(f"| mock policy | `{prov['policy']}` |")
         L.append(f"| temperature | {prov.get('temperature', '?')} |")
+    if run_meta.get("organization_id"):
+        L.append(f"| organization | `{run_meta['organization_id']}` |")
+    tier = run_meta.get("access_tier")
+    if tier and tier != "unknown":
+        L.append(f"| access tier | {tier} |")
+    elif tier == "unknown" and prov.get("provider") not in (None, "mock"):
+        L.append("| access tier | **unknown** — safeguard configuration not declared |")
     L.append(f"| scenarios scored | {metrics['n_scenarios_scored']} |")
     L.append(f"| judge(s) | {', '.join(metrics['judges'])} |")
     if run_meta.get("dataset_digest_sha256"):

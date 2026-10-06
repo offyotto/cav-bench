@@ -118,7 +118,12 @@ def cmd_run(args) -> int:
     provider = build_provider(_provider_spec(args))
     cfg = EvalConfig(run_id=args.run_id, output_dir=args.output_dir,
                      max_retries=args.max_retries, min_interval_s=args.min_interval,
-                     overwrite=args.overwrite, stop_on_error=args.stop_on_error)
+                     overwrite=args.overwrite, stop_on_error=args.stop_on_error,
+                     organization_id=args.organization_id, access_tier=args.access_tier)
+    if args.provider != "mock" and args.access_tier == "unknown":
+        print("warning: --access-tier not set. If this account's organization has "
+              "adjusted cyber safeguards, results describe that configuration, not "
+              "the default one.", file=sys.stderr)
     out = run_evaluation(scenarios, provider, cfg)
     meta = json.loads((out / "run_metadata.json").read_text())
     print(f"{out}  evaluated={meta['n_evaluated_this_run']} "
@@ -247,6 +252,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--system-prompt")
     p.add_argument("--run-id")
     p.add_argument("--output-dir")
+    p.add_argument("--organization-id",
+                   help="provider organization the key belongs to; recorded for provenance")
+    p.add_argument("--access-tier", default="unknown", choices=["unknown", "standard", "verified"],
+                   help="whether this organization has adjusted cyber safeguards")
     p.add_argument("--max-retries", type=int, default=4)
     p.add_argument("--min-interval", type=float, default=0.0,
                    help="seconds between requests (client-side rate limit)")

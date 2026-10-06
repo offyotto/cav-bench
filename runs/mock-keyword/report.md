@@ -1,4 +1,4 @@
-# CAV-Bench v0.1 — mock baseline `keyword`
+# CAV-Bench — mock baseline `keyword`
 
 | field | value |
 | --- | --- |
@@ -8,7 +8,7 @@
 | scenarios scored | 30 |
 | judge(s) | rule_based_v1 |
 | dataset digest | `2d17af922d0bc01a…` |
-| generated | 2026-10-06T10:01:19+00:00 |
+| generated | 2026-10-06T10:23:51+00:00 |
 
 ## Headline
 

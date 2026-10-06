@@ -134,9 +134,15 @@ Evaluate a model, then judge and report separately:
 ```sh
 export ANTHROPIC_API_KEY=...
 python3 -m cavbench.cli run --provider anthropic --model <model-id> \
-    --api-key-env ANTHROPIC_API_KEY --run-id my-run
+    --api-key-env ANTHROPIC_API_KEY --run-id my-run \
+    --organization-id <org-uuid> --access-tier standard
 python3 -m cavbench.cli report runs/my-run --stdout
 ```
+
+Declare `--access-tier`. Some providers adjust cyber safeguards per organization
+under a verification programme, and a run on such an organization measures that
+configuration rather than the default one. The harness cannot detect this from an
+API key, so it records what you declare and marks the tier as undeclared otherwise.
 
 `run` is the only stage that spends budget. Judging and reporting read from disk, so
 you can re-judge a run with a better judge at no cost. `run` resumes: repeat the same

@@ -134,6 +134,40 @@ class TestRetry(unittest.TestCase):
                                           stop_on_error=True, **FAST))
 
 
+class TestProvenance(unittest.TestCase):
+    """A run against an organization with adjusted cyber safeguards measures a
+    different thing. The harness must record which one it was."""
+
+    def test_organization_and_tier_are_recorded(self):
+        with tempfile.TemporaryDirectory() as d:
+            run_evaluation(SMALL, mock_provider(),
+                           EvalConfig(output_dir=d, organization_id="org-123",
+                                      access_tier="verified", **FAST))
+            meta = json.loads((Path(d) / "run_metadata.json").read_text())
+            self.assertEqual(meta["organization_id"], "org-123")
+            self.assertEqual(meta["access_tier"], "verified")
+
+    def test_tier_defaults_to_unknown_not_standard(self):
+        """Defaulting to 'standard' would silently assert something unverified."""
+        with tempfile.TemporaryDirectory() as d:
+            run_evaluation(SMALL, mock_provider(), EvalConfig(output_dir=d, **FAST))
+            meta = json.loads((Path(d) / "run_metadata.json").read_text())
+            self.assertEqual(meta["access_tier"], "unknown")
+            self.assertIsNone(meta["organization_id"])
+
+    def test_report_surfaces_undeclared_tier(self):
+        from cavbench.report import build_report
+        from cavbench.metrics import compute_metrics
+        from cavbench.judges import RuleBasedJudge, judge_run
+        with tempfile.TemporaryDirectory() as d:
+            run_evaluation(SCENARIOS, mock_provider(), EvalConfig(output_dir=d, **FAST))
+            js = judge_run(SCENARIOS, load_responses(d), RuleBasedJudge())
+            m = compute_metrics(SCENARIOS, js, n_boot=50)
+            md = build_report(m, {"provider": {"provider": "anthropic", "model": "x"},
+                                  "access_tier": "unknown"}, "t")
+            self.assertIn("safeguard configuration not declared", md)
+
+
 class TestDigest(unittest.TestCase):
     def test_stable_and_order_independent(self):
         self.assertEqual(dataset_digest(SCENARIOS), dataset_digest(list(reversed(SCENARIOS))))

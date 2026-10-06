@@ -34,6 +34,12 @@ RUNS_DIR = Path(__file__).resolve().parent.parent / "runs"
 class EvalConfig:
     run_id: str | None = None
     output_dir: Path | None = None
+    # Provenance. A provider account may sit in an organization whose cyber
+    # safeguards have been adjusted (for example under a vendor verification
+    # programme). That changes what is being measured, so it is recorded
+    # explicitly rather than inferred: the API key alone does not reveal it.
+    organization_id: str | None = None
+    access_tier: str = "unknown"      # unknown | standard | verified
     max_retries: int = 4
     backoff_base_s: float = 2.0
     backoff_cap_s: float = 60.0
@@ -185,6 +191,8 @@ def run_evaluation(scenarios: list[Scenario], provider: Provider,
         "finished_at": _utcnow(),
         "wall_seconds": round(time.monotonic() - t0, 2),
         "provider": provider.describe(),
+        "organization_id": cfg.organization_id,
+        "access_tier": cfg.access_tier,
         "n_scenarios_total": len(scenarios),
         "n_evaluated_this_run": len(todo),
         "n_skipped_resumed": len(scenarios) - len(todo),

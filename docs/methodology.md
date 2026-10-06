@@ -153,4 +153,11 @@ evaluated, the scenario identifiers, the Python version and the platform. The di
 changes when any prompt changes, so a reported number cannot be silently attached to
 a different dataset.
 
+Runs also record the provider organization and a declared access tier. Vendors now
+adjust cyber safeguards per organization under verification programmes, so two
+accounts calling the same model identifier can be served different safeguard
+configurations. This is not visible in an API key or a response, so it is declared
+rather than inferred, and reports mark the tier as undeclared when it is missing. A
+result that does not state its tier describes an unknown configuration.
+
 Judging and scoring read from stored responses. Re-judging never re-queries a model.
