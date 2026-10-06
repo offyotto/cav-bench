@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cav-bench"
+version = "0.1.0"
+description = "CAV-Bench: Contextual Authorization Verification Benchmark for AI cybersecurity safeguards"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT (code); CC-BY-4.0 (data)" }
+authors = [{ name = "CAV-Bench contributors" }]
+keywords = ["ai-safety", "cybersecurity", "benchmark", "safeguards", "over-refusal", "authorization"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Security",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+# Runtime has zero third-party dependencies (stdlib only) for reproducibility.
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+jsonschema = ["jsonschema>=4"]
+
+[project.scripts]
+cavbench = "cavbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["cavbench*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

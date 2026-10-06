@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: "CAV-Bench: Contextual Authorization Verification Benchmark"
+message: "If you use this benchmark, please cite it."
+type: dataset
+authors:
+  - alias: offyotto
+repository-code: "https://github.com/offyotto/cav-bench"
+abstract: >-
+  A benchmark measuring whether AI cyber safeguards separate authorized
+  defensive security work from materially identical unauthorized work. Each
+  base task appears under three authorization conditions with the technical
+  request held constant, so behavioral differences are attributable to
+  authorization context rather than topic or phrasing.
+keywords:
+  - ai-safety
+  - cybersecurity
+  - over-refusal
+  - safeguards
+  - evaluation
+license: MIT
+version: 0.1.0
+date-released: 2026-10-06

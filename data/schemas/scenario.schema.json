@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/cav-bench/cav-bench/data/schemas/scenario.schema.json",
+  "title": "CAV-Bench scenario",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenario_id", "base_task_id", "version_added", "track", "matched_set_id",
+    "authorization_class", "authorization_strength", "authorization_claim",
+    "authorization_evidence", "theater", "task_family", "technical_goal",
+    "requested_artifact", "is_multiturn", "conversation", "expected_behavior",
+    "ideal_response_classes", "acceptable_response_classes",
+    "disallowed_response_classes", "risk_level", "safety"
+  ],
+  "properties": {
+    "scenario_id": { "type": "string", "pattern": "^CAV-[A-Z0-9]+-[A-Z0-9-]+$" },
+    "base_task_id": { "type": "string", "pattern": "^T[0-9]{2}$" },
+    "version_added": { "type": "string", "pattern": "^v[0-9]+\\.[0-9]+$" },
+    "track": { "enum": ["core", "theater", "paraphrase", "multiturn", "verified"] },
+    "matched_set_id": { "type": "string", "minLength": 1 },
+    "authorization_class": { "enum": ["authorized", "ambiguous", "unauthorized"] },
+    "authorization_strength": { "enum": ["L0", "L1", "L2", "L3", "L4"] },
+    "authorization_claim": { "enum": ["none", "bare_assertion", "role_context", "scope_document"] },
+    "authorization_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "polarity", "span"],
+        "properties": {
+          "type": {
+            "enum": [
+              "loopback_target", "intentionally_vulnerable_image", "ctf_environment",
+              "owned_repository", "synthetic_service", "lab_vm", "internal_test_environment",
+              "bug_bounty_scope", "role_statement", "authorization_claim",
+              "third_party_target", "out_of_scope_target", "disclaimed_ownership",
+              "harmful_intent", "unspecified_target", "defensive_purpose"
+            ]
+          },
+          "polarity": { "enum": ["supports", "contradicts", "neutral"] },
+          "span": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "theater": { "type": "boolean" },
+    "task_family": { "type": "string", "minLength": 1 },
+    "technical_goal": { "type": "string", "minLength": 1 },
+    "requested_artifact": { "type": "string", "minLength": 1 },
+    "prompt": { "type": ["string", "null"] },
+    "is_multiturn": { "type": "boolean" },
+    "conversation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "content"],
+        "properties": {
+          "role": { "enum": ["user", "assistant"] },
+          "content": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "paraphrase_group": { "type": ["string", "null"] },
+    "paraphrase_style": { "type": ["string", "null"] },
+    "expected_behavior": { "type": "string", "minLength": 1 },
+    "ideal_response_classes": { "type": "array", "items": { "$ref": "#/$defs/behavior" }, "minItems": 1 },
+    "acceptable_response_classes": { "type": "array", "items": { "$ref": "#/$defs/behavior" } },
+    "disallowed_response_classes": { "type": "array", "items": { "$ref": "#/$defs/behavior" } },
+    "risk_level": { "enum": ["low", "medium", "high"] },
+    "access_tier_expectations": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "standard": { "type": "array", "items": { "$ref": "#/$defs/behavior" } },
+        "verified": { "type": "array", "items": { "$ref": "#/$defs/behavior" } },
+        "prohibited_for_all_tiers": { "type": "boolean" }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_kind", "synthetic_only", "contains_operational_payload"],
+      "properties": {
+        "target_kind": { "enum": ["loopback", "lab", "ctf", "synthetic_repo", "fictional_third_party", "unspecified", "mixed"] },
+        "synthetic_only": { "const": true },
+        "contains_operational_payload": { "const": false },
+        "reviewer_notes": { "type": "string" }
+      }
+    },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "notes": { "type": "string" }
+  },
+  "$defs": {
+    "behavior": { "enum": ["FULL_ASSIST", "CONDITIONAL_ASSIST", "CLARIFY_AUTHORIZATION", "SAFE_REDIRECT", "REFUSE"] }
+  }
+}
