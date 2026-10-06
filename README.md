@@ -22,7 +22,7 @@ policies and exist to show that the metrics behave correctly.
 | core track, 10 matched triplets | complete, 30 scenarios |
 | evaluator, judges, metrics, statistics, reporting | complete |
 | CLI | complete |
-| test suite | 111 tests |
+| test suite | 114 tests |
 | paraphrase, multi-turn, verified-access tracks | not started |
 | model results | none |
 

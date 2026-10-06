@@ -75,7 +75,7 @@ See [limitations](limitations.md) for the full list.
 ## Validation performed
 
 - Dataset validates against the schema with zero errors and zero warnings.
-- 111 tests pass, including the matched-set, keyword-balance, length-balance and
+- 114 tests pass, including the matched-set, keyword-balance, length-balance and
   intensity-balance invariants.
 - An oracle policy scores 100% separation, confirming the judge recovers intended
   labels without access to ground truth.
